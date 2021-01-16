@@ -1,6 +1,49 @@
 // test: no
 
-(function() {
+let character =[
+    {
+        name: "mario",
+        url_stand: "./img/mario_idle.gif",
+        url_moving: "./img/mario_moving.gif",
+    },
+    {
+        name: "luigi",
+        url_stand: "./img/luigi_idle.gif",
+        url_moving: "./img/luigi_moving.gif"
+    }
+]
+
+let status = false, tempUrl_stand,tempUrl_moving;
+
+let character_content = document.getElementById("character");
+for(let i of character){
+    let charDiv = document.createElement("div");
+    let charImg = document.createElement("img");
+    let charBtn = document.createElement("button");
+
+    charDiv.appendChild(charImg);
+    charDiv.appendChild(charBtn);
+
+    charImg.src = i.url_stand;
+    charBtn.innerText = i.name;
+    character_content.appendChild(charDiv);
+
+    charBtn.onclick = () => {
+        tempUrl_stand = i.url_stand;
+        tempUrl_moving = i.url_moving;
+        if (status == true) {
+            document.getElementById("game").remove();
+            status = true;
+            runRobotAnimation(VillageState.random(),goalOrientedRobot,[]);
+        
+        }else{
+            runRobotAnimation(VillageState.random(),goalOrientedRobot,[]);
+            status = true;
+        }
+
+    }
+}
+// (fuction() {
     "use strict"
   
     let active = null
@@ -14,10 +57,7 @@
       "Torung's house": {x: 316, y: 372},
       "Dubai's house": {x: 165, y: 370},
       "Sky's shop": {x: 59, y: 372},
-    //   "Marketplace": {x: 162, y: 110},
-    //   "Post Office": {x: 205, y: 57},
-    //   "Shop": {x: 137, y: 212},
-    //   "Town Hall": {x: 202, y: 213}
+
     }
     const placeKeys = Object.keys(places)
   
@@ -32,6 +72,7 @@
   
         let outer = (window.__sandbox ? window.__sandbox.output.div : document.body), doc = outer.ownerDocument
         this.node = outer.appendChild(doc.createElement("div"))
+        this.node.id = "game";
         this.node.style.cssText = "position: relative; line-height: 0.1; margin-left: 10px"
         this.map = this.node.appendChild(doc.createElement("img"))
         this.map.src = "img/village2x.png"
@@ -39,7 +80,7 @@
         this.robotElt = this.node.appendChild(doc.createElement("div"))
         this.robotElt.style.cssText = `position: absolute; transition: left ${0.8 / speed}s, top ${0.8 / speed}s;`
         let robotPic = this.robotElt.appendChild(doc.createElement("img"))
-        robotPic.src = "img/robot_moving2x.gif"
+        robotPic.src = tempUrl_moving;
         this.parcels = []
   
         this.text = this.node.appendChild(doc.createElement("span"))
@@ -97,7 +138,7 @@
         if (this.worldState.parcels.length == 0) {
           this.button.remove()
           this.text.textContent = ` Finished after ${this.turn} turns`
-          this.robotElt.firstChild.src = "img/robot_idle2x.png"
+          this.robotElt.firstChild.src = tempUrl_stand
         } else {
           this.schedule()
         }
@@ -111,12 +152,12 @@
         if (this.timeout == null) {
           this.schedule()
           this.button.textContent = "Stop"
-          this.robotElt.firstChild.src = "img/robot_moving2x.gif"
+          this.robotElt.firstChild.src = tempUrl_stand
         } else {
           clearTimeout(this.timeout)
           this.timeout = null
           this.button.textContent = "Start"
-          this.robotElt.firstChild.src = "img/robot_idle2x.png"
+          this.robotElt.firstChild.src = tempUrl_moving
         }
       }
     }
@@ -126,7 +167,7 @@
         clearTimeout(active.timeout)
       active = new Animation(worldState, robot, robotState)
     }
-  })()
+//   })()
 
 
 
@@ -141,12 +182,13 @@
     "Hospital-Bao's house", "Torung's house-Bao's house"
 
   ];
-//   const mailRoute = [
-//     "Alice's House", "Cabin", "Alice's House", "Bob's House",
-//     "Town Hall", "Daria's House", "Ernie's House",
-//     "Grete's House", "Shop", "Grete's House", "Farm",
-//     "Marketplace", "Post Office"
-//   ];
+
+const mailRoute =[
+    "Potion shop" , "Gym House" , "Potion shop",
+    "Dubai's house", "Sky's shop", "Dubai's house",
+    "Torung's house", "Bao's house", "Kiet's house"
+];
+
   
   function buildGraph(edges) {
       let graph = Object.create(null);
@@ -257,6 +299,6 @@
         return {direction: route[0], memory: route.slice(1)};
     }
   
-    runRobotAnimation(VillageState.random(),goalOrientedRobot,[]);
+    
   
   
